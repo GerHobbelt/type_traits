@@ -88,7 +88,7 @@ const char cc_array[array_size] = { 0,};
 const int iter_count = 1000000;
 
 
-int cpp_main(int argc, char* argv[])
+int cpp_main(int argc, const char** argv)
 {
    boost::timer t;
    double result;

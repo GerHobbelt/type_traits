@@ -76,7 +76,7 @@ inline void iter_swap(I1 one, I2 two)
 
 };   // namespace opt
 
-int cpp_main(int argc, char* argv[])
+int cpp_main(int argc, const char** argv)
 {
    //
    // testing iter_swap
