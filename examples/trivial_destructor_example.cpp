@@ -16,7 +16,7 @@
 
 #include <iostream>
 #include <boost/test/included/prg_exec_monitor.hpp>
-#include <boost/timer.hpp>
+#include <boost/timer/timer.hpp>
 #include <boost/type_traits.hpp>
 
 using std::cout;
@@ -79,18 +79,18 @@ void destroy_array2(T* first, T* last)
 //
 // define some global data:
 //
-const int array_size = 1000;
-int i_array[array_size] = {0,};
-const int ci_array[array_size] = {0,};
-char c_array[array_size] = {0,};
-const char cc_array[array_size] = { 0,};
+static const int array_size = 1000;
+static int i_array[array_size] = {0,};
+static const int ci_array[array_size] = {0,};
+static char c_array[array_size] = {0,};
+static const char cc_array[array_size] = { 0,};
 
-const int iter_count = 1000000;
+static const int iter_count = 1000000;
 
 
 int cpp_main(int argc, const char** argv)
 {
-   boost::timer t;
+   boost::timer::cpu_timer t;
    double result;
    int i;
    //
@@ -111,7 +111,7 @@ int cpp_main(int argc, const char** argv)
    {
       opt::destroy_array(i_array, i_array + array_size);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "destroy_array<int>: " << result << endl;
 
    // cache load:
@@ -123,7 +123,7 @@ int cpp_main(int argc, const char** argv)
    {
       opt::destroy_array1(i_array, i_array + array_size);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "destroy_array<int>(unoptimised#1): " << result << endl;
 
    // cache load:
@@ -135,19 +135,8 @@ int cpp_main(int argc, const char** argv)
    {
       opt::destroy_array2(i_array, i_array + array_size);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "destroy_array<int>(unoptimised#2): " << result << endl << endl;
 
    return 0;
 }
-
-
-
-
-
-
-
-
-
-
-

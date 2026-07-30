@@ -20,7 +20,7 @@
 #include <memory>
 
 #include <boost/test/included/prg_exec_monitor.hpp>
-#include <boost/timer.hpp>
+#include <boost/timer/timer.hpp>
 #include <boost/type_traits.hpp>
 
 using std::cout;
@@ -87,26 +87,26 @@ inline I2 copy(I1 first, I1 last, I2 out)
 //
 // define some global data:
 //
-const int array_size = 1000;
-int i_array_[array_size] = {0,};
-const int ci_array_[array_size] = {0,};
-char c_array_[array_size] = {0,};
-const char cc_array_[array_size] = { 0,};
+static const int array_size = 1000;
+static int i_array_[array_size] = {0,};
+static const int ci_array_[array_size] = {0,};
+static char c_array_[array_size] = {0,};
+static const char cc_array_[array_size] = { 0,};
 //
 // since arrays aren't iterators we define a set of pointer
 // aliases into the arrays (otherwise the compiler is entitled
 // to deduce the type passed to the template functions as
 // T (&)[N] rather than T*).
-int* i_array = i_array_;
-const int* ci_array = ci_array_;
-char* c_array = c_array_;
-const char* cc_array = cc_array_;
+static int* i_array = i_array_;
+static const int* ci_array = ci_array_;
+static char* c_array = c_array_;
+static const char* cc_array = cc_array_;
 
-const int iter_count = 1000000;
+static const int iter_count = 1000000;
 
 int cpp_main(int argc, const char** argv)
 {
-   boost::timer t;
+   boost::timer::cpu_timer t;
    double result;
    int i;
    cout << "Measuring times in micro-seconds per 1000 elements processed" << endl << endl;
@@ -122,7 +122,7 @@ int cpp_main(int argc, const char** argv)
    {
       opt::copy(ci_array, ci_array + array_size, i_array);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "opt::copy<const int*, int*>: " << result << endl;
 
    // cache load:
@@ -134,7 +134,7 @@ int cpp_main(int argc, const char** argv)
    {
       non_opt::copy(ci_array, ci_array + array_size, i_array);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "non_opt::copy<const int*, int*>: " << result << endl;
 
    // cache load:
@@ -146,7 +146,7 @@ int cpp_main(int argc, const char** argv)
    {
       std::copy(ci_array, ci_array + array_size, i_array);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "std::copy<const int*, int*>: " << result << endl;
 
    // cache load:
@@ -158,7 +158,7 @@ int cpp_main(int argc, const char** argv)
    {
       opt::copy(cc_array, cc_array + array_size, c_array);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "opt::copy<const char*, char*>: " << result << endl;
 
    // cache load:
@@ -170,7 +170,7 @@ int cpp_main(int argc, const char** argv)
    {
       non_opt::copy(cc_array, cc_array + array_size, c_array);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "non_opt::copy<const char*, char*>: " << result << endl;
 
    // cache load:
@@ -182,7 +182,7 @@ int cpp_main(int argc, const char** argv)
    {
       std::copy(cc_array, cc_array + array_size, c_array);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "std::copy<const char*, char*>: " << result << endl;
 
    return 0;

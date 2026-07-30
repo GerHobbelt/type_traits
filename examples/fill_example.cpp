@@ -21,7 +21,7 @@
 #include <cstring>
 
 #include <boost/test/included/prg_exec_monitor.hpp>
-#include <boost/timer.hpp>
+#include <boost/timer/timer.hpp>
 #include <boost/type_traits.hpp>
 
 #if defined(BOOST_NO_STDC_NAMESPACE) || (defined(std) && defined(__SGI_STL_PORT))
@@ -84,26 +84,26 @@ inline void fill(I first, I last, const T& val)
 //
 // define some global data:
 //
-const int array_size = 1000;
-int i_array_[array_size] = {0,};
-const int ci_array_[array_size] = {0,};
-char c_array_[array_size] = {0,};
-const char cc_array_[array_size] = { 0,};
+static const int array_size = 1000;
+static int i_array_[array_size] = {0,};
+static const int ci_array_[array_size] = {0,};
+static char c_array_[array_size] = {0,};
+static const char cc_array_[array_size] = { 0,};
 //
 // since arrays aren't iterators we define a set of pointer
 // aliases into the arrays (otherwise the compiler is entitled
 // to deduce the type passed to the template functions as
 // T (&)[N] rather than T*).
-int* i_array = i_array_;
-const int* ci_array = ci_array_;
-char* c_array = c_array_;
-const char* cc_array = cc_array_;
+static int* i_array = i_array_;
+static const int* ci_array = ci_array_;
+static char* c_array = c_array_;
+static const char* cc_array = cc_array_;
 
-const int iter_count = 1000000;
+static const int iter_count = 1000000;
 
 int cpp_main(int argc, const char** argv)
 {
-   boost::timer t;
+   boost::timer::cpu_timer t;
    double result;
    int i;
    //
@@ -125,7 +125,7 @@ int cpp_main(int argc, const char** argv)
    {
       opt::fill(c_array, c_array + array_size, (char)3);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "opt::fill<char*, char>: " << result << endl;
 
    // cache load:
@@ -137,7 +137,7 @@ int cpp_main(int argc, const char** argv)
    {
       non_opt::fill(c_array, c_array + array_size, (char)3);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "non_opt::fill<char*, char>: " << result << endl;
 
    // cache load:
@@ -149,7 +149,7 @@ int cpp_main(int argc, const char** argv)
    {
       std::fill(c_array, c_array + array_size, (char)3);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "std::fill<char*, char>: " << result << endl << endl;
 
    cout << "testing fill(int)...\n" << endl;
@@ -163,7 +163,7 @@ int cpp_main(int argc, const char** argv)
    {
       opt::fill(i_array, i_array + array_size, 3);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "opt::fill<int*, int>: " << result << endl;
 
    // cache load:
@@ -175,7 +175,7 @@ int cpp_main(int argc, const char** argv)
    {
       non_opt::fill(i_array, i_array + array_size, 3);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "non_opt::fill<int*, int>: " << result << endl;
 
    // cache load:
@@ -187,7 +187,7 @@ int cpp_main(int argc, const char** argv)
    {
       std::fill(i_array, i_array + array_size, 3);
    }
-   result = t.elapsed();
+   result = t.elapsed().wall;
    cout << "std::fill<int*, int>: " << result << endl << endl;
 
    return 0;
